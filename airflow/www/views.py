@@ -857,7 +857,7 @@ class Airflow(BaseView):
             ti_attrs=ti_attrs,
             failed_dep_reasons=failed_dep_reasons or no_failed_deps_result,
             task_id=task_id,
-            execution_date=urllib.quote(str(execution_date)),
+            execution_date=execution_date,
             special_attrs_rendered=special_attrs_rendered,
             form=form,
             dag=dag, title=title)

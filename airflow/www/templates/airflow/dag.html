@@ -267,14 +267,14 @@ function updateQueryStringParameter(uri, key, value) {
       url = "{{ url_for('airflow.rendered') }}" +
         "?task_id=" + task_id +
         "&dag_id=" + dag_id +
-        "&execution_date=" + execution_date;
+        "&execution_date=" + encodeURIComponent(execution_date);
       window.location = url;
     });
 
     $("#btn_subdag").click(function(){
       url = "{{ url_for('airflow.graph') }}" +
         "?dag_id=" + subdag_id +
-        "&execution_date=" + execution_date;
+        "&execution_date=" + encodeURIComponent(execution_date);
       window.location = url;
     });
 
@@ -282,7 +282,7 @@ function updateQueryStringParameter(uri, key, value) {
       url = "{{ url_for('airflow.log') }}" +
         "?task_id=" + task_id +
         "&dag_id=" + dag_id +
-        "&execution_date=" + execution_date;
+        "&execution_date=" + encodeURIComponent(execution_date);
       window.location = url;
     });
 
@@ -290,7 +290,7 @@ function updateQueryStringParameter(uri, key, value) {
       url = "{{ url_for('airflow.task') }}" +
         "?task_id=" + task_id +
         "&dag_id=" + dag_id +
-        "&execution_date=" + execution_date;
+        "&execution_date=" + encodeURIComponent(execution_date);
       window.location = url;
     });
 

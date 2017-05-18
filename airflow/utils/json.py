@@ -17,7 +17,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from datetime import datetime, date
+from datetime import timezone, datetime, date
 import json
 import numpy as np
 

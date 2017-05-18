@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 
-from datetime import timedelta
+from datetime import timezone, timedelta
 import airflow
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator

@@ -21,7 +21,7 @@ import psutil
 
 from builtins import input
 from past.builtins import basestring
-from datetime import datetime
+from datetime import timezone, datetime
 import getpass
 import imp
 import os

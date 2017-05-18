@@ -19,10 +19,11 @@ import os
 import pkg_resources
 import socket
 from functools import wraps
-from datetime import datetime, timedelta
+from datetime import timezone, datetime, timedelta
 import dateutil.parser
 import copy
 import json
+import urllib
 
 import inspect
 from textwrap import dedent
@@ -158,7 +159,7 @@ def duration_f(v, c, m, p):
 def datetime_f(v, c, m, p):
     attr = getattr(m, p)
     dttm = attr.isoformat() if attr else ''
-    if datetime.now().isoformat()[:4] == dttm[:4]:
+    if datetime.now(timezone.utc).isoformat()[:4] == dttm[:4]:
         dttm = dttm[5:]
     return Markup("<nobr>{}</nobr>".format(dttm))
 
@@ -856,7 +857,7 @@ class Airflow(BaseView):
             ti_attrs=ti_attrs,
             failed_dep_reasons=failed_dep_reasons or no_failed_deps_result,
             task_id=task_id,
-            execution_date=execution_date,
+            execution_date=urllib.quote(str(execution_date)),
             special_attrs_rendered=special_attrs_rendered,
             form=form,
             dag=dag, title=title)
@@ -970,7 +971,7 @@ class Airflow(BaseView):
             flash("Cannot find dag {}".format(dag_id))
             return redirect(origin)
 
-        execution_date = datetime.now()
+        execution_date = datetime.now(timezone.utc)
         run_id = "manual__{0}".format(execution_date.isoformat())
 
         dr = DagRun.find(dag_id=dag_id, run_id=run_id)
@@ -1148,10 +1149,10 @@ class Airflow(BaseView):
         if base_date:
             base_date = dateutil.parser.parse(base_date)
         else:
-            base_date = dag.latest_execution_date or datetime.now()
+            base_date = dag.latest_execution_date or datetime.now(timezone.utc)
 
         dates = dag.date_range(base_date, num=-abs(num_runs))
-        min_date = dates[0] if dates else datetime(2000, 1, 1)
+        min_date = dates[0] if dates else datetime(2000, 1, 1, tzinfo=timezone.utc)
 
         DR = models.DagRun
         dag_runs = (
@@ -1204,7 +1205,7 @@ class Airflow(BaseView):
             def set_duration(tid):
                 if (isinstance(tid, dict) and tid.get("state") == State.RUNNING and
                         tid["start_date"] is not None):
-                    d = datetime.now() - dateutil.parser.parse(tid["start_date"])
+                    d = datetime.now(timezone.utc) - dateutil.parser.parse(tid["start_date"])
                     tid["duration"] = d.total_seconds()
                 return tid
 
@@ -1301,7 +1302,7 @@ class Airflow(BaseView):
         if dttm:
             dttm = dateutil.parser.parse(dttm)
         else:
-            dttm = dag.latest_execution_date or datetime.now().date()
+            dttm = dag.latest_execution_date or datetime.now(timezone.utc).date()
 
         DR = models.DagRun
         drs = (
@@ -1377,10 +1378,10 @@ class Airflow(BaseView):
         if base_date:
             base_date = dateutil.parser.parse(base_date)
         else:
-            base_date = dag.latest_execution_date or datetime.now()
+            base_date = dag.latest_execution_date or datetime.now(timezone.utc)
 
         dates = dag.date_range(base_date, num=-abs(num_runs))
-        min_date = dates[0] if dates else datetime(2000, 1, 1)
+        min_date = dates[0] if dates else datetime(2000, 1, 1, tzinfo=timezone.utc)
 
         root = request.args.get('root')
         if root:
@@ -1471,10 +1472,10 @@ class Airflow(BaseView):
         if base_date:
             base_date = dateutil.parser.parse(base_date)
         else:
-            base_date = dag.latest_execution_date or datetime.now()
+            base_date = dag.latest_execution_date or datetime.now(timezone.utc)
 
         dates = dag.date_range(base_date, num=-abs(num_runs))
-        min_date = dates[0] if dates else datetime(2000, 1, 1)
+        min_date = dates[0] if dates else datetime(2000, 1, 1, tzinfo=timezone.utc)
 
         root = request.args.get('root')
         if root:
@@ -1533,10 +1534,10 @@ class Airflow(BaseView):
         if base_date:
             base_date = dateutil.parser.parse(base_date)
         else:
-            base_date = dag.latest_execution_date or datetime.now()
+            base_date = dag.latest_execution_date or datetime.now(timezone.utc)
 
         dates = dag.date_range(base_date, num=-abs(num_runs))
-        min_date = dates[0] if dates else datetime(2000, 1, 1)
+        min_date = dates[0] if dates else datetime(2000, 1, 1, tzinfo=timezone.utc)
 
         root = request.args.get('root')
         if root:
@@ -1626,7 +1627,7 @@ class Airflow(BaseView):
             DagModel).filter(DagModel.dag_id == dag_id).first()
 
         if orm_dag:
-            orm_dag.last_expired = datetime.now()
+            orm_dag.last_expired = datetime.now(timezone.utc)
             session.merge(orm_dag)
         session.commit()
         session.close()
@@ -1663,7 +1664,7 @@ class Airflow(BaseView):
         if dttm:
             dttm = dateutil.parser.parse(dttm)
         else:
-            dttm = dag.latest_execution_date or datetime.now().date()
+            dttm = dag.latest_execution_date or datetime.now(timezone.utc).date()
 
         form = DateTimeForm(data={'execution_date': dttm})
 
@@ -1674,7 +1675,7 @@ class Airflow(BaseView):
 
         tasks = []
         for ti in tis:
-            end_date = ti.end_date if ti.end_date else datetime.now()
+            end_date = ti.end_date if ti.end_date else datetime.now(timezone.utc)
             tasks.append({
                 'startDate': wwwutils.epoch(ti.start_date),
                 'endDate': wwwutils.epoch(end_date),
@@ -2068,7 +2069,7 @@ class ChartModelView(wwwutils.DataProfilingMixin, AirflowModelView):
             model.iteration_no += 1
         if not model.user_id and current_user and hasattr(current_user, 'id'):
             model.user_id = current_user.id
-        model.last_modified = datetime.now()
+        model.last_modified = datetime.now(timezone.utc)
 
 chart_mapping = (
     ('line', 'lineChart'),
@@ -2276,9 +2277,9 @@ class DagRunModelView(ModelViewOnly):
                 count += 1
                 dr.state = target_state
                 if target_state == State.RUNNING:
-                    dr.start_date = datetime.now()
+                    dr.start_date = datetime.now(timezone.utc)
                 else:
-                    dr.end_date = datetime.now()
+                    dr.end_date = datetime.now(timezone.utc)
             session.commit()
             models.DagStat.update(dirty_ids, session=session)
             flash(

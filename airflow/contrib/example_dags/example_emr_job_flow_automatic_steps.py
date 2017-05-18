@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from datetime import timedelta
+from datetime import timezone, timedelta
 import airflow
 from airflow import DAG
 from airflow.contrib.operators.emr_create_job_flow_operator import EmrCreateJobFlowOperator

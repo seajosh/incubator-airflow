@@ -14,7 +14,7 @@
 
 from __future__ import absolute_import
 from random import random
-from datetime import datetime, timedelta
+from datetime import timezone, datetime, timedelta
 import dateutil
 import time
 from . import hive

@@ -17,7 +17,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from datetime import datetime, date, timedelta
+from datetime import timezone, datetime, date, timedelta
 from dateutil.relativedelta import relativedelta  # for doctest
 import six
 
@@ -66,7 +66,7 @@ def date_range(
     if end_date and num:
         raise Exception("Wait. Either specify end_date OR num")
     if not end_date and not num:
-        end_date = datetime.now()
+        end_date = datetime.now(timezone.utc)
 
     delta_iscron = False
     if isinstance(delta, six.string_types):

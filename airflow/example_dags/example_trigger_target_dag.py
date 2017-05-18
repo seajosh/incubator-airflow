@@ -14,7 +14,7 @@
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.models import DAG
-from datetime import datetime
+from datetime import timezone, datetime
 
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
@@ -37,7 +37,7 @@ pp = pprint.PrettyPrinter(indent=4)
 # 2. A Target DAG : c.f. example_trigger_target_dag.py
 
 args = {
-    'start_date': datetime.now(),
+    'start_date': datetime.now(timezone.utc),
     'owner': 'airflow',
 }
 

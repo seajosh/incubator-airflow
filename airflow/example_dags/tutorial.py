@@ -20,7 +20,7 @@ Documentation that goes along with the Airflow tutorial located
 import airflow
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
-from datetime import timedelta
+from datetime import timezone, timedelta
 
 
 # these args will get passed on to each operator

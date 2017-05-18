@@ -17,7 +17,7 @@ import cx_Oracle
 from airflow.hooks.dbapi_hook import DbApiHook
 from builtins import str
 from past.builtins import basestring
-from datetime import datetime
+from datetime import timezone, datetime
 import numpy
 import logging
 

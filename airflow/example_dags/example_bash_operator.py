@@ -17,7 +17,7 @@ from builtins import range
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.models import DAG
-from datetime import timedelta
+from datetime import timezone, timedelta
 
 
 args = {

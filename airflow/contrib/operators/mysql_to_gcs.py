@@ -21,7 +21,7 @@ from airflow.hooks.mysql_hook import MySqlHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 from collections import OrderedDict
-from datetime import date, datetime
+from datetime import timezone, date, datetime
 from decimal import Decimal
 from MySQLdb.constants import FIELD_TYPE
 from tempfile import NamedTemporaryFile

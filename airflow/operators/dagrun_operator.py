@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from datetime import datetime
+from datetime import timezone, datetime
 import logging
 
 from airflow.models import BaseOperator, DagBag
@@ -60,7 +60,7 @@ class TriggerDagRunOperator(BaseOperator):
         self.trigger_dag_id = trigger_dag_id
 
     def execute(self, context):
-        dro = DagRunOrder(run_id='trig__' + datetime.now().isoformat())
+        dro = DagRunOrder(run_id='trig__' + datetime.now(timezone.utc).isoformat())
         dro = self.python_callable(context, dro)
         if dro:
             session = settings.Session()

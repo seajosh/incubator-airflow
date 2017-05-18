@@ -40,7 +40,7 @@ def _create_dagruns(dag, execution_dates, state, run_id_template):
         dr = dag.create_dagrun(
             run_id=run_id_template.format(date.isoformat()),
             execution_date=date,
-            start_date=datetime.datetime.now(),
+            start_date=datetime.datetime.now(timezone.utc),
             external_trigger=False,
             state=state,
         )

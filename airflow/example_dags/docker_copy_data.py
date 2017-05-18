@@ -21,7 +21,7 @@ TODO: Review the workflow, change it accordingly to to your environment & enable
 #
 # from airflow import DAG
 # import airflow
-# from datetime import datetime, timedelta
+# from datetime import timezone, datetime, timedelta
 # from airflow.operators import BashOperator
 # from airflow.operators import ShortCircuitOperator
 # from airflow.operators.docker_operator import DockerOperator
@@ -29,7 +29,7 @@ TODO: Review the workflow, change it accordingly to to your environment & enable
 # default_args = {
 #     'owner': 'airflow',
 #     'depends_on_past': False,
-#     'start_date': datetime.now(),
+#     'start_date': datetime.now(timezone.utc),
 #     'email': ['airflow@airflow.com'],
 #     'email_on_failure': False,
 #     'email_on_retry': False,

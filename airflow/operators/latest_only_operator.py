@@ -39,7 +39,7 @@ class LatestOnlyOperator(BaseOperator):
                          allowing execution to proceed.""")
             return
 
-        now = datetime.datetime.now()
+        now = datetime.datetime.now(timezone.utc)
         left_window = context['dag'].following_schedule(
             context['execution_date'])
         right_window = context['dag'].following_schedule(left_window)
@@ -72,7 +72,7 @@ class LatestOnlyOperator(BaseOperator):
                 logging.warning("Task {} was not part of a dag run. "
                                 "This should not happen."
                                 .format(task))
-                now = datetime.datetime.now()
+                now = datetime.datetime.now(timezone.utc)
                 ti = TaskInstance(task, execution_date=context['ti'].execution_date)
                 ti.state = State.SKIPPED
                 ti.start_date = now
